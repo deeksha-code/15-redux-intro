@@ -89,3 +89,9 @@ Redux
 8.when you have lots of global UI state that needs to be updated frequently(because redux is optimized for this)
 [Shopping Cart,current tabs,complex filters or search,...] (these are not super common in UI state)
 9.when you have complex state with nested objects and arrays(beacause you can mutate state with redux toolkit)((these are not super common in UI state))
+
+
+chatgpt link for clarification
+https://chatgpt.com/share/679b1e6e-077c-800c-8413-5eb193d58a36
+
+
