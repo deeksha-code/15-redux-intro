@@ -1,0 +1,91 @@
+import { combineReducers, createStore } from "redux";//for creating multiple reducers with single store
+import { useDispatch, useSelector } from "react-redux";//for dispatching and retrieving values  of store in particular component
+redux-thunk for making asynchronous operations
+
+https://api.frankfurter.app/latest?amount=10&from=GBP&to=USD
+npm install redux-devtools-extension --legacy-peer-deps
+redux developer tools
+react developer tools
+
+two types of redux: classic redux,redux toolkit
+redux toolkit-modern and preferred way of writing redux code
+
+
+advantages of redux toolkit
+- Eliminates the need for manually setting up middleware and configuring Redux DevTools.
+-action creators are automatically created
+-we can write code that mutates state inside reducers(will be converted to immutable logic behind the scenes by immer library)
+
+import { configureStore } from "@reduxjs/toolkit";//for configuring store
+
+
+import { createSlice } from "@reduxjs/toolkit";
+A function that accepts an initial state, an object full of reducer functions, and a "slice name", 
+and automatically generates action creators and action types that correspond to the reducers and state.
+
+
+
+Point to be noted:
+
+Default Action Creators: Accept only one argument directly as the payload.
+
+Multiple Arguments:
+
+Without prepare: Manually combine arguments into an object before dispatching.
+With prepare: Write a custom prepare function to allow multiple arguments while keeping clean and consistent action creator usage
+
+example:
+
+const CustomerSlice = createSlice({
+  name: "customer",
+  initialState,
+  reducers: {
+    createCustomer: {
+      prepare(fullName, nationalID) {
+        return {
+          payload: {
+            fullName,
+            nationalID,
+            createdAt: new Date().toISOString,
+          },
+        };
+      },
+      reducer(state, action) {
+        state.fullName = action.payload.fullName;
+        state.nationalID = action.payload.nationalID;
+        state.createdAt = action.payload.createdAt;
+      },
+    },
+    updateName(state, action) {
+      state.fullName = action.payload;
+    },
+  },
+});
+
+
+
+Context API VS Redux
+
+context API+useReducer
+Built into react
+1.Easy to setup a single context
+2.Additional state "slide" requires new context set up from scratch(provider hell in App.js)
+3.No mechanism for async operations(keep in mind that we should not use these solutions for remote state)
+4.Performance optimization is a pain
+5.only react DevTools
+6.use the context API for global state management in small apps
+7.when you just need to share a value that doesn't change often[color theme,preferredlanguage,authenticated user,..]
+8.when you need to solve a simple prop drilling problem
+9.when you need to manage state in a local sub-tree of the app(for example in the compound component pattern)
+
+Redux
+1.requires additional package(larger bundle size)
+2.more work to setup initially
+3.once setup its easy to create additional state slices
+4.supports middleware for async operations(keep in mind that we should not use these solutions for remote state)
+5.performace is optimized out of the box
+6.Excellent DevTools
+7.use Redux for global state management in large apps
+8.when you have lots of global UI state that needs to be updated frequently(because redux is optimized for this)
+[Shopping Cart,current tabs,complex filters or search,...] (these are not super common in UI state)
+9.when you have complex state with nested objects and arrays(beacause you can mutate state with redux toolkit)((these are not super common in UI state))
