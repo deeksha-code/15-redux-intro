@@ -31,6 +31,7 @@ function AccountOperations() {
   function handleRequestLoan() {
     if(!loanAmount ||!loanPurpose) return;
     dispatch(requestLoan(loanAmount,loanPurpose));
+    // dispatch(requestLoan({ amount: 1000, purpose: "Buy a car" }))  //Action creators in Redux Toolkit accept only a single argument by default, so if you need to pass multiple values, you must wrap them in an object — unless you use a prepare function, which allows multiple arguments.
     setLoanAmount('');
     setLoanPurpose('');
   }
