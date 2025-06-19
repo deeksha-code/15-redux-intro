@@ -95,3 +95,103 @@ chatgpt link for clarification
 https://chatgpt.com/share/679b1e6e-077c-800c-8413-5eb193d58a36
 
 
+Additional Points:
+
+1. There should be no redux-thunk externally specified for Redux Toolkit
+
+ Redux Toolkit includes `redux-thunk` by default.
+ You don’t need to install or configure it manually when using `configureStore()`.
+
+js
+// This automatically includes redux-thunk under the hood
+const store = configureStore({
+  reducer: {
+    account: accountReducer,
+  },
+});
+
+
+
+
+2. createSlice can handle only synchronous logic
+
+
+ The `reducers` field in `createSlice()` is only for pure synchronous state updates — things like increasing counters, setting flags, etc.
+
+js
+reducers: {
+  increment(state) {
+    state.value += 1; // sync
+  }
+}
+
+
+ You cannot do this inside reducers:
+
+js
+//  Invalid inside createSlice
+fetch(https://api.com);
+
+
+For that, you use:
+
+* Async thunks (custom ones like in your code)
+* Or `createAsyncThunk` (Redux Toolkit's helper)
+
+
+
+ 3. Action creators can accept only one argument
+
+Yes, by default — but `prepare` lets you change that.
+
+ Redux Toolkit-generated action creators accept only one argument by default — this becomes the `payload`.
+
+Example:
+
+js
+reducers: {
+  deposit(state, action) {
+    // action.payload = 100
+  }
+}
+dispatch(deposit(100)); 
+
+
+If you want to pass multiple arguments, you use `prepare`:
+
+js
+requestLoan: {
+  prepare(amount, purpose) {
+    return {
+      payload: { amount, purpose },
+    };
+  },
+  reducer(state, action) {
+    // action.payload.amount
+    // action.payload.purpose
+  },
+}
+dispatch(requestLoan(1000, Buy a car)); 
+
+
+
+
+Summary
+
+| Concept                       |  Redux Toolkit Behavior          |
+| -- |  |
+| Built-in `redux-thunk`?       |  Yes, automatically included     |
+| `createSlice.reducers`        |  Only synchronous logic allowed |
+| Default action creators       |  Accept one argument (`payload`) |
+| Multiple arguments to action? |  Use `prepare()` function        |
+
+
+
+
+
+
+
+
+
+
+
